@@ -1,19 +1,34 @@
 <template>
   <div class="main" id="main" @click="AnyClick">
-    <!-- <Leftbar></Leftbar> -->
-    <router-view></router-view>
+    <Top></Top>
+    <Leftbar></Leftbar>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script lang='ts'>
 import Leftbar from "@/components/leftbar.vue";
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Mixins } from "vue-property-decorator";
+import { socket } from "@/utils/socket";
+import socketMixins from "@/utils/mixins";
+import Top from "@/components/top.vue";
+import { Mutation } from "vuex-class";
 @Component({
   components: {
-    Leftbar
+    Leftbar,
+    Top
   }
 })
-export default class Main extends Vue {
+export default class Main extends Mixins(socketMixins) {
+  @Mutation("loginStateDelete") loginStateDelete!: Function;
+  private loginData: string = "";
+  InitSocket() {
+    this.loginData = `{"type":"login","client_name":"NewPc","room_id":"5","uid":"199","kid":"20"}`;
+    this.newsocket.SocketOpen(this.loginData);
+    this.newsocket.ListenMessage();
+  }
   AnyClick() {
     if (!this.$store.state.Loginstate) {
       this.$Message.warning("登陆状态过期，请重新登陆");
@@ -33,19 +48,21 @@ export default class Main extends Vue {
         new Date().getTime() - JSON.parse(is_cookie[0][1]).logintime >=
         60 * 60 * 1000
       ) {
-        this.$store.commit("loginStateDelete");
+        this.loginStateDelete();
       }
     }, 10000);
   }
   created() {
     this.loginStateTest();
+    this.InitSocket();
   }
 }
 </script>
 
 <style>
 .main {
-  width: 100%;
-  height: 92vh;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 </style>

@@ -1,18 +1,19 @@
 <template>
   <div class="chart_colleft">
     <div class="list_box">
-      <div class="list_hover" id="hover"></div>
+      <!-- <div class="list_hover" id="hover"></div> -->
       <div
         class="colleft_list"
-        :class="[ischoose==item.personname?a:b]"
-        @mouseenter="mousein(index)"
-        @mouseleave="mouseout(index)"
-        @click="this.ischoose=item.personname"
+        :class="[ischoose==item.client_name?'ischoose':'nochoose',item.isOnline?'':'gray']"
+        @mouseenter="this.cur = index"
+        @mouseleave="this.cur = 999"
+        @click="ChangeTalkUser(item.client_name)"
         v-for="(item,index) in talkhistorylist"
         :key="index"
       >
-        <img :src="item.img" class="colleft_img">
-        <p class="colleft_p">{{item.personname}}</p>
+        <img :src="item.avatarUrl" class="colleft_img gray">
+        <p class="colleft_p">{{item.client_name}}</p>
+        <p class="colleft_time">{{item.lastTalktime}}</p>
       </div>
     </div>
   </div>
@@ -20,88 +21,90 @@
 
 <script lang='ts'>
 import { Vue, Component } from "vue-property-decorator";
-@Component
+import { Mutation } from "vuex-class";
+
+@Component({})
 export default class Lastchat extends Vue {
-  private ischoose: boolean = false;
+  @Mutation("talkingUserState")
+  talkingUserState!: Function;
+
+  private ischoose: string = "";
   private cur: number = 999;
-  private s: string = "enter";
-  private h: string = "leave";
-  private a: string = "ischoose";
-  private b: string = "nochoose";
-  private hover: any = document.getElementById("hover");
-  // 这个就是请求过来的
-  private talkhistorylist: any = [
+  private talkhistorylist: config.historytalklistTypes[] = [
+    // 这个就是请求过来的
     {
-      img: require("@/assets/active.png"),
-      personname: "asdasd"
+      avatarUrl: require("@/assets/active.png"),
+      client_name: "asdasd",
+      lastTalktime: "09/10 20:01",
+      isOnline: true
     },
     {
-      img: require("@/assets/all.png"),
-      personname: "123123"
+      avatarUrl: require("@/assets/all.png"),
+      client_name: "123123",
+      lastTalktime: "09/10 20:01",
+      isOnline: true
     },
     {
-      img: require("@/assets/all.png"),
-      personname: "呜呜呜呜呜"
+      avatarUrl: require("@/assets/all.png"),
+      client_name: "呜呜呜呜呜",
+      lastTalktime: "09/10 20:01",
+      isOnline: false
     },
     {
-      img: require("@/assets/all.png"),
-      personname: "亲亲亲亲亲"
+      avatarUrl: require("@/assets/all.png"),
+      client_name: "亲亲亲亲亲",
+      lastTalktime: "09/10 20:01",
+      isOnline: false
     }
   ];
-  mousein(x: number) {
-    this.cur = x;
 
-    this.hover.style.height = 12 + "vh";
-    this.hover.style.top = 12 * x + "vh";
+  // 点击修改对话对象
+  ChangeTalkUser(x: string, y: number) {
+    this.ischoose = x;
+    let listTemp = {
+      name: x,
+      id: y
+    };
+    this.talkingUserState(listTemp);
   }
-  mouseout(x: number) {
-    this.cur = 999;
-    this.hover.style.height = 0 + "vh";
-  }
-
-  created() {}
 }
 </script>
 
 <style scoped lang='less'>
 .chart_colleft {
-  height: 92vh;
+  height: 100%;
   overflow: auto;
-  width: 17%;
+  width: 20%;
   border-right: 1px solid #393e46;
-  background-color: #eeeeee;
+  background-color: #ebebeb;
   display: inline-block;
 }
 
 .colleft_list {
   width: 100%;
   height: 12vh;
-  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
   &:hover {
-    color: #eeeeee;
+    background-color: #dbdbdb;
   }
 }
 
-.colleft_p {
-  margin-left: 30px;
-  vertical-align: middle;
-  position: absolute;
-  top: 50%;
-  left: 40%;
-  transform: translate(-50%, -50%);
+.colleft_time {
+  margin-right: 10px;
+  color: #999;
 }
-
 .list_box {
-  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 .colleft_img {
   width: 6vh;
   height: 6vh;
-  position: absolute;
-  top: 50%;
-  left: 20%;
-  transform: translate(-50%, -50%);
+  margin-left: 5px;
 }
 
 .colleft_close {
@@ -133,9 +136,7 @@ export default class Lastchat extends Vue {
 }
 
 .ischoose {
-  color: #eeeeee;
-  background-color: #393e46;
-  box-shadow: 0 0 20px #222831;
+  background-color: #dbdbdb;
 }
 
 .list_hover {
@@ -144,7 +145,7 @@ export default class Lastchat extends Vue {
   left: 0px;
   width: 100%;
   height: 0px;
-  background: url('/src/assets/bg.png') center center no-repeat;
+  background: url("/src/assets/bg.png") center center no-repeat;
   transition: top 0.3s, height 0.3s;
 }
 </style>

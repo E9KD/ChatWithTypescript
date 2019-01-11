@@ -1,11 +1,11 @@
 <template>
   <div class="top">
     <div class="top_box">
-      <img class="box_img" src="../assets/logo.jpeg" alt>
+      <img class="box_img gray" src="../assets/logo.jpeg" alt>
       <p class="box_p">比尔高</p>
-      <p class="box_loginout" v-if="Loginstate" @click="loginOut">登出</p>
+      <!-- <p class="box_loginout" v-if="Loginstate" @click="loginOut">登出</p>
       <p class="box_login" @click="goLogin('/login')" v-if="!Loginstate">登陆</p>
-      <p class="box_register" @click="goLogin('/register')" v-if="!Loginstate">注册</p>
+      <p class="box_register" @click="goLogin('/register')" v-if="!Loginstate">注册</p>-->
     </div>
   </div>
 </template>
@@ -13,10 +13,10 @@
 <script lang='ts'>
 import { Vue, Component } from "vue-property-decorator";
 import { State, Mutation } from "vuex-class";
-@Component
+@Component({})
 export default class Top extends Vue {
-  @State Loginstate: any;
-  @Mutation loginStateDelete: any;
+  @State("Loginstate") Loginstate: any;
+  @Mutation("loginStateDelete") loginStateDelete: any;
   private theme1: string = "light";
   loginOut() {
     this.loginStateDelete();
@@ -34,8 +34,12 @@ export default class Top extends Vue {
 <style scoped lang='less'>
 .top {
   height: 8vh;
-  width: 100%;
-  background-color: #222831;
+  width: 100vw;
+  background-color: #e1e1e6;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 20;
 }
 .top_box {
   width: 90%;
@@ -56,7 +60,6 @@ export default class Top extends Vue {
   vertical-align: middle;
   margin-left: 30px;
   line-height: 8vh;
-  color: white;
 }
 .box_login {
   position: absolute;

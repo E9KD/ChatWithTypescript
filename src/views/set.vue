@@ -37,7 +37,7 @@ export default class Set extends Vue {
     } else {
       this.$Message.error(`修改失败`);
     }
-    setTimeout(() => this.$router.push("/main/chart"), 1000);
+    setTimeout(() => this.$router.push("/main/chat"), 1000);
   }
   @Watch("phonenum")
   ChangePhonenum(x: any[]) {

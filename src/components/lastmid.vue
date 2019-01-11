@@ -2,7 +2,7 @@
   <div class="lastmid">
     <div class="top_talk">
       <div
-        :class="item.code==1?you:mine"
+        :class="item.code==1?'talk_you':'talk_mine'"
         v-for="(item,index) in lasttalkhistory"
         :key="index"
         class="animated fadeIn"
@@ -13,9 +13,9 @@
             <p class="textbox_top_day">{{item.day}}</p>
             <p class="textbox_top_time">{{item.time}}</p>
           </div>
-          <p :class="item.code==1?yp:mp">{{item.p}}</p>
+          <p :class="item.code==1?'you_p':'mine_p'">{{item.p}}</p>
         </div>
-        <img :class="item.code==1?yi:mi" :src="item.code==1?yimg:mimg">
+        <img :class="item.code==1?'you_img':'mine_img'" :src="item.code==1?yimg:mimg">
       </div>
     </div>
   </div>
@@ -27,15 +27,9 @@ import { Vue, Component } from "vue-property-decorator";
 export default class Lastmid extends Vue {
   private value1: boolean = false;
   private text: string = "";
-  private yp: string = "you_p";
-  private yi: string = "you_img";
-  private mp: string = "mine_p";
-  private mi: string = "mine_img";
   private yimg: string = require("@/assets/all.png");
   private mimg: string = require("@/assets/active.png");
   private talklist: any = [];
-  private you: string = "talk_you";
-  private mine: string = "talk_mine";
   private bigimg: string = require("@/assets/active.png");
   private isbigimg: boolean = false;
   private lasttalkhistory: any = [
@@ -60,8 +54,9 @@ export default class Lastmid extends Vue {
 <style scoped lang="less">
 .lastmid {
   width: 80%;
-  height: 92vh;
+  height: 100%;
   display: inline-block;
+  background-color: #f7f7f7;
 }
 
 .top_title {

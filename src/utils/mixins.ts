@@ -1,7 +1,7 @@
 import { socket } from "@/utils/socket";
 import { Vue, Component } from "vue-property-decorator";
 
-@Component
+@Component({})
 export default class Minix extends Vue {
   newsocket: any = new socket();
   ServerSendMessage(data: string) {

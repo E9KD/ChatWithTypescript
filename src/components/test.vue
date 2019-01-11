@@ -5,27 +5,10 @@
   </div>
 </template>
 
-<script>
-import { login } from "@/utils/api.js";
-import {input} from '@/utils/test.js'
-export default {
-  data() {
-    return {
-      asd: "儿子的纸",
-      p: ""
-    };
-  },
-  props: ["snum"],
-  methods: {
-    click() {
-      this.$emit("tofu", this.asd);
-    }
-  },
-  created() {
-
-
-  }
-};
+<script lang='ts'>
+import { Vue, Component } from "vue-property-decorator";
+@Component({})
+export default class Test extends Vue {}
 </script>
 
 <style lang="less" scoped>

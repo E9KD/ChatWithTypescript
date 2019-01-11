@@ -1,6 +1,4 @@
-import {StateType} from "@/store/types";
-
-const state: StateType = {
+const state: config.StateType = {
   password: 0,
   Loginurl: "",
   // 登陆状态
@@ -13,7 +11,7 @@ const state: StateType = {
   // 当前对话的状态
   talkListstate: false,
   nextpersonmeg: {},
-  talklistnumber: 0,
+  talklistnumber: 10,
   talknumbertop: 5,
   // 房间中的信息
   chartroom_logininfo: [],

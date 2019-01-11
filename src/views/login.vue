@@ -13,7 +13,7 @@
         <p class="userinfo_p">&nbsp;</p>
       </div>
       <div class="box_register">
-        <p class="register_btn" @click="goRegsiterPage()">立刻注册</p>
+        <p class="register_btn" @click="GoRegsiterPage">立刻注册</p>
       </div>
       <div class="box_loginbtn">
         <p class="loginbtn_btn" @click="login">登陆</p>
@@ -24,23 +24,12 @@
 
 <script lang='ts'>
 import { Vue, Component } from "vue-property-decorator";
-import { test } from "@/utils/test.ts";
-@Component
+import { test } from "@/utils/test";
+@Component({})
 export default class Lastchat extends Vue {
-  private gi: boolean = true;
   private username: string = "";
   private userpassword: string = "";
-  private name: string = `song`;
-  private lastName: string = `zhen`;
-  private index: number = 0;
-  private a: number = 123;
-  private node: any = {
-    a: 1,
-    xia: function() {
-      console.log(this.a + 1);
-    }
-  };
-  goRegsiterPage() {
+  GoRegsiterPage() {
     this.$router.push("/register");
   }
   login() {
@@ -52,7 +41,8 @@ export default class Lastchat extends Vue {
       let loginusername = ctest.npTest(this.username);
       let loginuserpassword = ctest.npTest(this.userpassword);
       if (loginusername && loginuserpassword) {
-        if (this.gi) {
+        let gi: boolean = true;
+        if (gi) {
           this.$Message.success("登陆成功");
           //修改cookie
           setTimeout(() => {
@@ -102,7 +92,8 @@ export default class Lastchat extends Vue {
     let userinfo = `userinfo={"username":"","logintime":""}`;
     document.cookie = userinfo;
   }
-  test() {}
+  test() {
+  }
   created() {
     this.init();
     this.test();
@@ -113,7 +104,7 @@ export default class Lastchat extends Vue {
 <style lang="less" scoped>
 .login {
   width: 100%;
-  height: 92vh;
+  height: 100vh;
   position: relative;
   background-color: #393e46;
   .login_box {

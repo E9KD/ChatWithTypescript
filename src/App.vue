@@ -1,31 +1,33 @@
 <template>
   <div id="app">
-    <Top></Top>
     <router-view></router-view>
-    <Start></Start>
+    <!-- <Start></Start>-->
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import Top from "@/components/top.vue";
 import Start from "@/components/start.vue";
 import { con } from "@/utils/test.ts";
 import { State, Mutation } from "vuex-class";
 
 @Component({
   components: {
-    Top,
     Start
   }
 })
 export default class App extends Vue {
-  @Mutation loginStateDelete: any;
-  @Mutation loginStateActive: any;
+  @Mutation("loginStateDelete")
+  loginStateDelete: any;
+
+  @Mutation("loginStateActive")
+  loginStateActive: any;
+
   clearModule() {
     this.loginStateDelete();
     this.$router.push("/");
   }
+
   init() {
     // 查看存在userinfo
     if (document.cookie) {
@@ -49,10 +51,12 @@ export default class App extends Vue {
       this.$router.push("/");
     }
   }
+
   Egg() {
     let m = new con();
     m.c();
   }
+
   created() {
     this.init();
     this.Egg();
@@ -66,5 +70,15 @@ export default class App extends Vue {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+.gray {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+
+  filter: grayscale(100%);
+
+  filter: gray;
 }
 </style>

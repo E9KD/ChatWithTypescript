@@ -1,8 +1,4 @@
 <template>
-  <!-- 
-                                10.13
-                                    添加设置接待人数上限功能
-  -->
   <div class="queue">
     <!-- <div class="userinfo">
         <img :src="userimg" >
@@ -25,36 +21,31 @@
   </div>
 </template> 
 
-<script>
-import { mapState } from "vuex";
-export default {
-  data() {
-    return {
-      talktopnum: "5",
-      waitperson: 0,
-      userimg: require("@/assets/success.png"),
-      username: "asdasdasdasd"
-    };
-  },
-  methods: {
-    addNextperson() {
-      let newperson = {
-        img: require("@/assets/active.png"),
-        personname: "新人",
-        messagecount: 1
-      };
-      this.$store.commit("addNextPerson", newperson);
-    }
-  },
-  computed: {
-    ...mapState(["talklistnumber"])
-  },
-  watch: {
-    talktopnum(x) {
-      this.$store.commit("setTalkNumberTop", x);
-    }
+<script lang='ts'>
+import { Vue, Component, Watch } from "vue-property-decorator";
+import { State, Mutation } from "vuex-class";
+@Component({})
+export default class Queue extends Vue {
+  @State("talklistnumber") talklistnumber!: number;
+  @Mutation("setTalkNumberTop") setTalkNumberTop!: Function;
+  @Mutation("addNextPerson") addNextPerson!: Function;
+  private talktopnum: number = 5;
+  private waitperson: number = 0;
+  private userimg: string = require("@/assets/success.png");
+  addNextperson() {
+    // console.log(this.talklistnumber);
+    // let newperson = {
+    //   img: require("@/assets/active.png"),
+    //   personname: "新人",
+    //   messagecount: 1
+    // };
+    // this.addNextPerson(newperson);
   }
-};
+  @Watch("talktopnum")
+  Changetalktopnum(x: number) {
+    this.setTalkNumberTop(x);
+  }
+}
 </script>
 
 <style lang="less" scoped>
