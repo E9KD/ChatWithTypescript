@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "http-proxy-middleware": "^0.19.1",
     "iview": "^3.2.1",
     "js-base64": "^2.5.0",
     "lrz": "^4.9.40",

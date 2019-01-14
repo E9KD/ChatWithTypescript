@@ -8,7 +8,7 @@ import Set from "@/views/set.vue";
 import Lastchat from "@/views/lastchat.vue";
 import Test from "@/views/test.vue";
 
-Vue.use(Router); 
+Vue.use(Router);
 
 const MainRouter = [
   {

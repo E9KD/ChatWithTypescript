@@ -1,5 +1,6 @@
 import axios from "axios";
 
+axios.defaults.baseURL = '/api'
 // export class ajax {
 //     get(url, data = {}) {
 //         return new Promise((resolve, reject) => {
@@ -19,14 +20,11 @@ import axios from "axios";
 //     }
 // }
 
-const get = function(url: string, data = {}) {
+export const get = function(url: string, data = {}) {
   return new Promise((resolve, reject) => {
     axios
       .get(url, data)
       .then(resolve)
       .catch(reject);
   });
-};
-export default {
-  get
 };

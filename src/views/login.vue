@@ -1,22 +1,29 @@
 <template>
   <div class="login">
     <div class="login_box">
-      <p class="login_title">登陆</p>
+      <p class="login_title" @click="click">登陆</p>
       <div class="box_userinfo">
         <p class="userinfo_text">用户名</p>
-        <input type="text" class="userinfo_input" placeholder="请输入用户名" v-model="username">
+        <Input  placeholder="请输入用户名" v-model="username" class="userinfo_input" />
         <p class="userinfo_p">&nbsp;</p>
       </div>
       <div class="box_userinfo">
         <p class="userinfo_text">密码</p>
-        <input type="password" class="userinfo_input" placeholder="请输入密码" v-model="userpassword">
+        <Input type="password" placeholder="请输入密码" v-model="userpassword" class="userinfo_input" />
         <p class="userinfo_p">&nbsp;</p>
       </div>
-      <div class="box_register">
-        <p class="register_btn" @click="GoRegsiterPage">立刻注册</p>
+
+      <div class="box_loginbtn">
+        <Button type="success" long style="background-color:#00adb5;">登陆</Button>
+        <!-- <p class="loginbtn_btn" @click="login">登陆</p> -->
+      </div>
+      <Divider class="divider">更多方式登陆</Divider>
+      <div class="iconBox">
+        <img :src="wximg" alt @mouseenter="MouserEnter" @mouseleave="MouserLeave" class="wximg">
       </div>
       <div class="box_loginbtn">
-        <p class="loginbtn_btn" @click="login">登陆</p>
+        <!-- <p class="register_btn" @click="GoRegsiterPage">立刻注册</p> -->
+        <Button type="success" long>注册</Button>
       </div>
     </div>
   </div>
@@ -25,13 +32,18 @@
 <script lang='ts'>
 import { Vue, Component } from "vue-property-decorator";
 import { test } from "@/utils/test";
+import { get } from "@/utils/ajax";
+
 @Component({})
 export default class Lastchat extends Vue {
   private username: string = "";
   private userpassword: string = "";
+  private wximg: string = require("@/assets/wxnormal.png");
+
   GoRegsiterPage() {
     this.$router.push("/register");
   }
+
   login() {
     if (!this.username || !this.userpassword) {
       this.$Message.warning("请输入用户名和密码");
@@ -71,6 +83,15 @@ export default class Lastchat extends Vue {
       }
     }
   }
+
+  MouserEnter() {
+    this.wximg = require("@/assets/wxactive.png");
+  }
+
+  MouserLeave() {
+    this.wximg = require("@/assets/wxnormal.png");
+  }
+
   // 默认检测
   init() {
     if (!document.cookie) {
@@ -83,17 +104,32 @@ export default class Lastchat extends Vue {
       is_cookie.length > 0 ? this.ChangeUserName(is_cookie) : this.SetCookie();
     }
   }
+
   // 修改username
   ChangeUserName(x: any) {
     this.username = JSON.parse(x[0][1]).username;
   }
+
   // 创建cookie
   SetCookie() {
     let userinfo = `userinfo={"username":"","logintime":""}`;
     document.cookie = userinfo;
   }
+
   test() {
+    let url = "wx/a.json";
+    get(url).then(res => {
+      console.log(res);
+    });
   }
+
+  click() {
+    let url = `https://open.weixin.qq.com/connect/qrconnect?appid=wx922f66d89f46bf7b&redirect_uri=${encodeURIComponent(
+      "http://www.biergao.cn/weixin/callback"
+    )}&response_type=code&scope=snsapi_login&state=dJqmyrgSZ09B92bUKEnm4lnOKU1XOelgvln3wfE3#wechat_redirect`;
+    window.location.href = url;
+  }
+
   created() {
     this.init();
     this.test();
@@ -109,37 +145,56 @@ export default class Lastchat extends Vue {
   background-color: #393e46;
   .login_box {
     position: absolute;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 30%;
     height: 80%;
     max-width: 400px;
     max-height: 500px;
-    background-color: #eeeeee;
-    border-radius: 30px;
-    .login_title {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    .divider{
       margin-top: 10%;
+      font-size: 12px;
+    }
+    .login_title {
+      margin-top: 5%;
       font-size: 30px;
       color: #00adb5;
       text-align: center;
     }
+    .iconBox{
+      display: flex;
+      flex-flow:  row nowrap;
+      justify-content: center;
+      align-items: center;
+      .wximg{
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+      }
+    }
     .box_userinfo {
-      margin-top: 10%;
-      margin-left: 15%;
+      width: 70%;
+      margin: 0 auto;
+      .userinfo_input{
+        margin-top: 10px;
+      }
       .userinfo_text {
         color: #00adb5;
       }
-      input {
-        margin-top: 3%;
-        padding-left: 10px;
-        width: 80%;
-        height: 4vh;
-        line-height: 4vh;
-        background-color: #e7e0e0;
-        border: none;
-        border-radius: 10px;
-      }
+      // input {
+      //   margin-top: 3%;
+      //   padding-left: 10px;
+      //   width: 80%;
+      //   height: 4vh;
+      //   line-height: 4vh;
+      //   background-color: #e7e0e0;
+      //   border: none;
+      //   border-radius: 10px;
+      // }
       .userinfo_p {
         margin: 10px 10px;
         font-size: 12px;
@@ -161,8 +216,9 @@ export default class Lastchat extends Vue {
       }
     }
     .box_loginbtn {
-      width: 100%;
-      margin-top: 10%;
+      width: 70%;
+      margin: 0 auto;
+      margin-top: 5%;
       .loginbtn_btn {
         cursor: pointer;
         margin: 0 auto;

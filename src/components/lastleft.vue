@@ -5,8 +5,8 @@
       <div
         class="colleft_list"
         :class="[ischoose==item.client_name?'ischoose':'nochoose',item.isOnline?'':'gray']"
-        @mouseenter="this.cur = index"
-        @mouseleave="this.cur = 999"
+        @mouseenter="MouserEnter(index)"
+        @mouseleave="mouserLeave"
         @click="ChangeTalkUser(item.client_name)"
         v-for="(item,index) in talkhistorylist"
         :key="index"
@@ -57,6 +57,14 @@ export default class Lastchat extends Vue {
       isOnline: false
     }
   ];
+
+  MouserEnter(x: number) {
+    this.cur = x;
+  }
+
+  MouserLeave() {
+    this.cur = 999;
+  }
 
   // 点击修改对话对象
   ChangeTalkUser(x: string, y: number) {

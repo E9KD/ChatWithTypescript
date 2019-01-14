@@ -6,8 +6,8 @@
         class="colleft_list"
         :class="[ischoose==item.client_name?'ischoose':'nochoose',item.isOnline?'':'gray']"
         @click="goChartList(item.client_name,item.uid,index)"
-        @mouseenter="this.cur = index"
-        @mouseleave="this.cur = 999"
+        @mouseenter="MouserEnter(index)"
+        @mouseleave="MouserLeave"
         v-for="(item,index) in talkingpersonlist"
         :key="index"
       >
@@ -89,7 +89,14 @@ export default class Left extends Vue {
     this.ischoose = x;
     this.talkingpersonlist[index].messagecount = 0;
   }
-
+  // 鼠标进入
+  MouserEnter(x: number) {
+    this.cur = x;
+  }
+  // 鼠标推出
+  MouserLeave() {
+    this.cur = 999;
+  }
   // 关闭列表
   Closelist(x: number) {
     this.talkingpersonlist.splice(x, 1);
@@ -207,6 +214,9 @@ export default class Left extends Vue {
   color: #999;
 }
 .colleft_img {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
   width: 6vh;
   height: 6vh;
   flex-grow: 1;

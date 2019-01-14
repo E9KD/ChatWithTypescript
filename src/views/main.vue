@@ -23,12 +23,15 @@ import { Mutation } from "vuex-class";
 })
 export default class Main extends Mixins(socketMixins) {
   @Mutation("loginStateDelete") loginStateDelete!: Function;
+
   private loginData: string = "";
+
   InitSocket() {
     this.loginData = `{"type":"login","client_name":"NewPc","room_id":"5","uid":"199","kid":"20"}`;
     this.newsocket.SocketOpen(this.loginData);
     this.newsocket.ListenMessage();
   }
+
   AnyClick() {
     if (!this.$store.state.Loginstate) {
       this.$Message.warning("登陆状态过期，请重新登陆");
@@ -37,6 +40,7 @@ export default class Main extends Mixins(socketMixins) {
       }, 800);
     }
   }
+
   // 登陆状态测试
   loginStateTest() {
     setInterval(() => {

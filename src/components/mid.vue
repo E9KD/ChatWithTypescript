@@ -397,8 +397,7 @@ export default class Mid extends Mixins(socketMixins) {
 
   created() {
     this.ClickBodyCloseImg();
-    this.ShowEnd();
-    console.log(this);
+    this.ShowEnd()
   }
 
   beforeDestory() {
