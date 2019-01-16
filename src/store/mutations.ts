@@ -56,6 +56,16 @@ const mutations: MutationTree<config.StateType> = {
   // 添加未读的信息提示
   AddMessageId(state, x) {
     state.stateMessage = x;
+  },
+
+  // 选择短语并关闭短语抽屉
+  ChooseQuickReply(state, x) {
+    state.quickReplycontent = x;
+    state.quickReplystate = false;
+  },
+  // 打开短语抽屉
+  DeleteQuickReply(state) {
+    state.quickReplycontent = '';
   }
 };
 

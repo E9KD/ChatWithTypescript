@@ -1,6 +1,7 @@
+interface state {}
+
 const state: config.StateType = {
   password: 0,
-  Loginurl: "",
   // 登陆状态
   Loginstate: false,
   Loginstatetimenow: "",
@@ -16,7 +17,11 @@ const state: config.StateType = {
   // 房间中的信息
   chartroom_logininfo: [],
   //获取消息的id
-  stateMessage: []
+  stateMessage: [],
+  // 选择的短语内容
+  quickReplycontent: "",
+  // 短语抽屉状态
+  quickReplystate: false
 };
 
 export default state;

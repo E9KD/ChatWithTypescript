@@ -121,32 +121,17 @@
       </div>
     </Drawer>
     <!-- 短语抽屉 -->
-    <Drawer title="快捷短语" :closable="false" v-model="quickreplybox" class="drawer" width="40">
-      <Button type="success" @click="AddQuickReply">
-        <Icon type="md-add"/>添加短语
-      </Button>
-      <div class="quickreply_for" v-for="(item,index) in quickReplylist" :key="index">
-        <p class="for_content" @click="WirteQuickReply(item.content)">{{item.content}}</p>
-        <Button @click="ChangeQuickReply(item.id)" type="primary" class="for_btn">修改</Button>
-        <Button @click="DeleteQuickReply(item.id)" type="error" class="for_btn">删除</Button>
-      </div>
+    <Drawer
+      title="快捷短语"
+      :on-close="change"
+      :closable="false"
+      v-model="quickreplybox"
+      class="drawer"
+      width="40"
+    >
+      <QuickReply/>
     </Drawer>
     <Right v-show="isShowRight"></Right>
-    <div class="quickreply"></div>
-    <!-- 修改/添加短语弹窗 -->
-    <Modal
-      v-model="changeAndaddReply"
-      :title="modalTitle"
-      @on-ok="CompleteWithChangeQuickReply"
-      @on-cancel="CancelWithChangeQuickReply"
-    >
-      <input
-        type="text"
-        placeholder="随便你吧..."
-        class="change_reply_input"
-        v-model="changeOraddReply"
-      >
-    </Modal>
   </div>
 </template>
 
@@ -158,9 +143,11 @@ import socketMixins from "@/utils/mixins";
 let Base64 = require("js-base64").Base64;
 import { Vue, Component, Mixins, Watch, Prop } from "vue-property-decorator";
 import Right from "@/components/right.vue";
+import QuickReply from "@/components/quickreply.vue";
 @Component({
   components: {
-    Right
+    Right,
+    QuickReply
   }
 })
 export default class Mid extends Mixins(socketMixins) {
@@ -168,21 +155,26 @@ export default class Mid extends Mixins(socketMixins) {
   pageState!: string;
 
   @State("talkListstate")
-  talkListstate!: boolean;
+  talkListstate!: string;
 
   @State("talkingUsername")
   talkingUsername!: string;
-
-  @State("newpersonMessage")
-  newpersonMessage: any;
 
   @State("talkingUserId")
   talkingUserId!: number;
 
   @State("stateMessage")
-  stateMessage: any;
+  stateMessage?: any;
 
-  private modalTitle: string = "";
+  @State("quickReplystate")
+  quickReplystate!: boolean;
+
+  @State("quickReplycontent")
+  quickReplycontent!: string;
+
+  @Mutation("DeleteQuickReply")
+  DeleteQuickReply!: Function;
+
   private isExitend: boolean = false;
   private quickreplybox: boolean = false;
   private toggle: string = "<";
@@ -195,72 +187,6 @@ export default class Mid extends Mixins(socketMixins) {
   private bigimg: string = require("@/assets/active.png");
   private isbigimg: boolean = false;
   private talklisthistory: any[] = [];
-  private changeAndaddReply: boolean = false;
-  private changeOraddReply: string = ""; // 添加或者修改的短语
-  private changeReplyid: number = 0; // 修改短语的id
-  private quickReplylist: config.quickreplyTypes[] = [
-    // 短语列表
-    {
-      content:
-        "as撒打算打算打算打算打算打算打算打算打算打算打算的as撒打算打算打算打算打算打算打算打算打算打算打算的as撒打算打算打算打算打算打算打算打算打算打算打算的",
-      id: 1
-    },
-    {
-      content: "11111",
-      id: 2
-    },
-    {
-      content: "22222",
-      id: 3
-    },
-    {
-      content: "333333",
-      id: 4
-    }
-  ];
-
-  // 添加短语
-  AddQuickReply() {
-    this.modalTitle = "添加短语";
-    this.changeAndaddReply = true;
-  }
-
-  // 修改短语
-  ChangeQuickReply(x: number) {
-    this.modalTitle = "修改短语";
-    this.changeReplyid = x;
-    this.changeAndaddReply = true;
-  }
-
-  // 删除短语
-  DeleteQuickReply(id: number) {
-    for (let i in this.quickReplylist) {
-      let i2Number: number = Number(i);
-      if (this.quickReplylist[i2Number].id == id) {
-        this.quickReplylist.splice(i2Number, 1);
-      }
-    }
-  }
-
-  // 短语修改/添加完成
-  CompleteWithChangeQuickReply() {
-    // 判断是添加还是修改
-    if (this.modalTitle == "修改短语") {
-      // 发送请求修改短语
-      this.$Message.success("修改成功！");
-      this.changeOraddReply = "";
-    } else if (this.modalTitle == "添加短语") {
-      // 添加短语
-      this.$Message.success("添加成功！");
-      this.changeOraddReply = "";
-    }
-  }
-
-  // 短语修改取消
-  CancelWithChangeQuickReply() {
-    this.$Message.warning("取消修改！");
-    this.changeOraddReply = "";
-  }
 
   // 显示Right组件
   IsShowRight() {
@@ -271,6 +197,10 @@ export default class Mid extends Mixins(socketMixins) {
       this.isShowRight = false;
       this.toggle = "<";
     }
+  }
+
+  change() {
+    console.log("close");
   }
 
   // 结束接待
@@ -334,12 +264,6 @@ export default class Mid extends Mixins(socketMixins) {
     }
   }
 
-  // 选择短语
-  WirteQuickReply(x: string) {
-    this.text = x;
-    this.quickreplybox = false;
-  }
-
   // 保持对话最后
   keepBom() {
     setTimeout(() => {
@@ -350,6 +274,7 @@ export default class Mid extends Mixins(socketMixins) {
 
   // 选择快捷回复
   GetQuickReply() {
+    // this.OpenQuickReply();
     this.quickreplybox = true;
   }
 
@@ -397,7 +322,7 @@ export default class Mid extends Mixins(socketMixins) {
 
   created() {
     this.ClickBodyCloseImg();
-    this.ShowEnd()
+    this.ShowEnd();
   }
 
   beforeDestory() {
@@ -439,6 +364,21 @@ export default class Mid extends Mixins(socketMixins) {
       this.talklist = [];
     }
     this.keepBom();
+  }
+
+  //监听选择短语内容，改变则放入
+  @Watch("quickReplycontent")
+  changequickReplycontent(x: string) {
+    if (!x) return;
+    this.text = this.quickReplycontent;
+  }
+
+  // 监听短语抽屉关闭，关闭则重置短语内容
+  @Watch("quickreplybox")
+  Changequickreplybox(x: boolean) {
+    if (!x) {
+      this.DeleteQuickReply();
+    }
   }
 }
 </script>
@@ -764,27 +704,5 @@ export default class Mid extends Mixins(socketMixins) {
 
 .drawer {
   width: 40%;
-}
-.quickreply_for {
-  overflow: hidden;
-  padding: 20px 0px;
-  border-bottom: 1px solid #e6e6e6;
-  .for_content {
-    float: left;
-    width: 70%;
-    padding: 10px;
-    &:hover {
-      background-color: #e6e6e6;
-    }
-  }
-  .for_btn {
-    float: right;
-    margin-right: 10px;
-  }
-}
-.change_reply_input {
-  width: 100%;
-  padding-left: 10px;
-  height: 30px;
 }
 </style>

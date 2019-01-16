@@ -2,7 +2,7 @@
  * @Company: YunMian
  * @Author: Song
  * @Date: 2019-01-09 10:34:12
- * @LastEditTime: 2019-01-11 09:50:56
+ * @LastEditTime: 2019-01-15 16:41:05
  */
 
 declare namespace config {
@@ -31,7 +31,6 @@ declare namespace config {
   // State
   export interface StateType {
     password: number;
-    Loginurl: string;
     // 登陆状态
     Loginstate: boolean;
     Loginstatetimenow: string;
@@ -47,7 +46,9 @@ declare namespace config {
     // 房间中的信息
     chartroom_logininfo: LoginInfo[];
     //获取消息的id
-    stateMessage: any;
+    stateMessage: any[];
+    quickReplycontent: string;
+    quickReplystate: boolean;
   }
 
   // 客户信息

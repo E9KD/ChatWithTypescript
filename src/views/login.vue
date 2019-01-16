@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="login_box">
-      <p class="login_title" @click="click">登陆</p>
+      <p class="login_title" >登陆</p>
       <div class="box_userinfo">
         <p class="userinfo_text">用户名</p>
         <Input  placeholder="请输入用户名" v-model="username" class="userinfo_input" />
@@ -14,12 +14,12 @@
       </div>
 
       <div class="box_loginbtn">
-        <Button type="success" long style="background-color:#00adb5;">登陆</Button>
-        <!-- <p class="loginbtn_btn" @click="login">登陆</p> -->
+        <Button type="success" long style="background-color:#00adb5;" @click="login">登陆</Button>
+        <!-- <p class="loginbtn_btn" >登陆</p> -->
       </div>
       <Divider class="divider">更多方式登陆</Divider>
       <div class="iconBox">
-        <img :src="wximg" alt @mouseenter="MouserEnter" @mouseleave="MouserLeave" class="wximg">
+        <img :src="wximg" alt @mouseenter="MouserEnter" @mouseleave="MouserLeave" class="wximg" @click="LoginWithWeChat">
       </div>
       <div class="box_loginbtn">
         <!-- <p class="register_btn" @click="GoRegsiterPage">立刻注册</p> -->
@@ -123,7 +123,7 @@ export default class Lastchat extends Vue {
     });
   }
 
-  click() {
+  LoginWithWeChat() {
     let url = `https://open.weixin.qq.com/connect/qrconnect?appid=wx922f66d89f46bf7b&redirect_uri=${encodeURIComponent(
       "http://www.biergao.cn/weixin/callback"
     )}&response_type=code&scope=snsapi_login&state=dJqmyrgSZ09B92bUKEnm4lnOKU1XOelgvln3wfE3#wechat_redirect`;
@@ -133,6 +133,7 @@ export default class Lastchat extends Vue {
   created() {
     this.init();
     this.test();
+    
   }
 }
 </script>
@@ -148,15 +149,15 @@ export default class Lastchat extends Vue {
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 30%;
-    height: 80%;
+    width: 25%;
+    height: 75%;
     max-width: 400px;
     max-height: 500px;
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     .divider{
-      margin-top: 10%;
+      margin-top: 5%;
       font-size: 12px;
     }
     .login_title {
@@ -179,6 +180,7 @@ export default class Lastchat extends Vue {
     .box_userinfo {
       width: 70%;
       margin: 0 auto;
+      margin-top: 5%;
       .userinfo_input{
         margin-top: 10px;
       }
