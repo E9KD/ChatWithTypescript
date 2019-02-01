@@ -2,7 +2,6 @@
   <div id="app">
     <router-view></router-view>
     <!-- <Start></Start>-->
-    <!-- 在测试一次 -->
   </div>
 </template>
 
