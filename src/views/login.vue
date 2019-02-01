@@ -1,50 +1,76 @@
 <template>
   <div class="login">
     <div class="login_box">
-      <p class="login_title" >登陆</p>
+      <p class="login_title">登陆</p>
       <div class="box_userinfo">
         <p class="userinfo_text">用户名</p>
-        <Input  placeholder="请输入用户名" v-model="username" class="userinfo_input" />
+        <Input placeholder="请输入用户名" v-model="username" class="userinfo_input"/>
         <p class="userinfo_p">&nbsp;</p>
       </div>
       <div class="box_userinfo">
         <p class="userinfo_text">密码</p>
-        <Input type="password" placeholder="请输入密码" v-model="userpassword" class="userinfo_input" />
+        <Input type="password" placeholder="请输入密码" v-model="userpassword" class="userinfo_input"/>
         <p class="userinfo_p">&nbsp;</p>
       </div>
 
       <div class="box_loginbtn">
-        <Button type="success" long style="background-color:#00adb5;" @click="login">登陆</Button>
-        <!-- <p class="loginbtn_btn" >登陆</p> -->
+        <Button type="success" long style="background-color:#00adb5;" @click="Login">登陆</Button>
       </div>
       <Divider class="divider">更多方式登陆</Divider>
       <div class="iconBox">
-        <img :src="wximg" alt @mouseenter="MouserEnter" @mouseleave="MouserLeave" class="wximg" @click="LoginWithWeChat">
+        <img
+          :src="wximg"
+          alt
+          @mouseenter="MouserEnter"
+          @mouseleave="MouserLeave"
+          class="wximg"
+          @click="LoginWithWeChat"
+        >
       </div>
       <div class="box_loginbtn">
-        <!-- <p class="register_btn" @click="GoRegsiterPage">立刻注册</p> -->
         <Button type="success" long>注册</Button>
       </div>
     </div>
+    <Modal v-model="loginDefeated" width="360">
+      <p slot="header" style="color:#f60;text-align:center">
+        <Icon type="ios-information-circle"></Icon>
+        <span>登陆失败</span>
+      </p>
+      <div style="text-align:center">
+        <p>登陆失败，请点击下面按钮重新登陆！</p>
+      </div>
+      <div slot="footer">
+        <Button type="success" size="large" long @click="ReLogin">重新登陆</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script lang='ts'>
 import { Vue, Component } from "vue-property-decorator";
 import { test } from "@/utils/test";
-import { get } from "@/utils/ajax";
+import ajax from "@/utils/ajax";
+import api from "@/utils/api";
+import { Mutation, State } from "vuex-class";
 
 @Component({})
 export default class Lastchat extends Vue {
+  @State("userParam")
+  userParam!: config.userparamTypes;
+  // 获取用户参数
+  @Mutation("GetUserParam")
+  GetUserParam!: Function;
+
   private username: string = "";
   private userpassword: string = "";
   private wximg: string = require("@/assets/wxnormal.png");
+  private loginDefeated: boolean = false;
 
   GoRegsiterPage() {
     this.$router.push("/register");
   }
 
-  login() {
+  Login() {
     if (!this.username || !this.userpassword) {
       this.$Message.warning("请输入用户名和密码");
       return;
@@ -62,7 +88,9 @@ export default class Lastchat extends Vue {
               this.username
             }","logintime":"${new Date().getTime()}"}`;
             this.$store.commit("loginStateActive");
-            this.$router.push("/main");
+            this.$router.push({
+              path: "/main"
+            });
           }, 800);
         } else {
           this.$Message.error("用户名和密码不正确");
@@ -84,6 +112,11 @@ export default class Lastchat extends Vue {
     }
   }
 
+  // 重新登录
+  ReLogin() {
+    window.location.href = api.LoginUrl;
+  }
+
   MouserEnter() {
     this.wximg = require("@/assets/wxactive.png");
   }
@@ -91,18 +124,37 @@ export default class Lastchat extends Vue {
   MouserLeave() {
     this.wximg = require("@/assets/wxnormal.png");
   }
-
   // 默认检测
   init() {
-    if (!document.cookie) {
-      this.SetCookie();
-    } else {
-      let is_cookie: any = document.cookie
-        .split(";")
-        .map(x => x.split("="))
-        .filter(x => x[0].replace(/\s+/g, "") == "userinfo");
-      is_cookie.length > 0 ? this.ChangeUserName(is_cookie) : this.SetCookie();
-    }
+    setTimeout(() => {
+      let url: string = window.location.href;
+      if (url.indexOf("code") == -1) return;
+      let code = url
+        .split("?")[1]
+        .split("&")[0]
+        .split("=")[1];
+      let TrueHero = `${api.CodeUrl}?code=${code}`;
+      ajax.Get(TrueHero).then(res => {
+        if (res.hasOwnProperty("errcode")) {
+          this.loginDefeated = true;
+          return;
+        }
+        this.GetUserParam(res);
+        if (this.userParam.hasOwnProperty("nickname")) {
+          this.$router.push("/main");
+        }
+      });
+    }, 500);
+
+    // if (!document.cookie) {
+    //   this.SetCookie();
+    // } else {
+    //   let is_cookie: any = document.cookie
+    //     .split(";")
+    //     .map(x => x.split("="))
+    //     .filter(x => x[0].replace(/\s+/g, "") == "userinfo");
+    //   is_cookie.length > 0 ? this.ChangeUserName(is_cookie) : this.SetCookie();
+    // }
   }
 
   // 修改username
@@ -117,23 +169,28 @@ export default class Lastchat extends Vue {
   }
 
   test() {
-    let url = "wx/a.json";
-    get(url).then(res => {
-      console.log(res);
-    });
+
+    function change(arr:any){
+      let left=0
+      let right=arr.length-1
+      let tip=arr[0]
+      // for(let i=0;)
+      // 判断比基数小的
+      if(arr[right]>tip){
+        
+      }
+      // 判断比基数大的
+
+    }
   }
 
   LoginWithWeChat() {
-    let url = `https://open.weixin.qq.com/connect/qrconnect?appid=wx922f66d89f46bf7b&redirect_uri=${encodeURIComponent(
-      "http://www.biergao.cn/weixin/callback"
-    )}&response_type=code&scope=snsapi_login&state=dJqmyrgSZ09B92bUKEnm4lnOKU1XOelgvln3wfE3#wechat_redirect`;
-    window.location.href = url;
+    window.location.href = api.LoginUrl;
   }
 
   created() {
     this.init();
     this.test();
-    
   }
 }
 </script>
@@ -155,8 +212,8 @@ export default class Lastchat extends Vue {
     max-height: 500px;
     background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    .divider{
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    .divider {
       margin-top: 5%;
       font-size: 12px;
     }
@@ -166,12 +223,12 @@ export default class Lastchat extends Vue {
       color: #00adb5;
       text-align: center;
     }
-    .iconBox{
+    .iconBox {
       display: flex;
-      flex-flow:  row nowrap;
+      flex-flow: row nowrap;
       justify-content: center;
       align-items: center;
-      .wximg{
+      .wximg {
         width: 25px;
         height: 25px;
         cursor: pointer;
@@ -181,7 +238,7 @@ export default class Lastchat extends Vue {
       width: 70%;
       margin: 0 auto;
       margin-top: 5%;
-      .userinfo_input{
+      .userinfo_input {
         margin-top: 10px;
       }
       .userinfo_text {

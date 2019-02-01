@@ -17,16 +17,16 @@ export class socket {
     this.socket.addEventListener("message", event => {
       let data = JSON.parse(event.data);
       console.log(data);
-      if (data.type == "login" && data.client_list) {
+      if (data.type == "init" && data.client_list) {
         console.log(`这里是login全部成员`);
         store.commit("ChangeChartLoginInfo", data.client_list);
       } else if (data.type == "logout") {
         console.log(`这里是loginout`);
         this.LoginOutComputed(data.uid);
-      } else if (data.type == "login" && !data.client_list) {
+      } else if (data.type == "init" && !data.client_list) {
         console.log(`这里是成员login`);
         store.commit("PushChartPersonNumber", data);
-      } else if (data.type == "say") {
+      } else if (data.type == "chatmessage") {
         console.log(`这里是收到说话`);
         store.commit("AddMessageId", data);
       } else if (data.type == "ping") {
@@ -52,7 +52,7 @@ export class socket {
     this.SocketOpen(param);
   }
   // 单人登出房间
-  LoginOutComputed(param:number) {
+  LoginOutComputed(param: number) {
     let list = [...store.state.chartroom_logininfo];
     let index = null;
     for (let i in list) {

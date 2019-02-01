@@ -10,19 +10,21 @@
 export let login_user_info = [
   {
     avatarUrl: require("@/assets/active.png"),
-    client_name: "111",
+    client_name: "now",
     messagecount: 4,
     content: "asdasdasdasd",
     time: "今天 12:20",
-    isOnline: false
+    isOnline: true,
+    uid:1
   },
   {
     avatarUrl: require("@/assets/active.png"),
-    client_name: "222",
+    client_name: "last",
     messagecount: 4,
     content: "asdasdasdasd",
     time: "今天 12:20",
-    isOnline: true
+    isOnline: true,
+    uid:2
   }
 ];
 

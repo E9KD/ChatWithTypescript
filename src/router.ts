@@ -1,30 +1,24 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Login from "@/views/login.vue";
-import Main from "@/views/main.vue";
-import Register from "@/views/register.vue";
-import chat from "@/views/chat.vue";
-import Set from "@/views/set.vue";
-import Lastchat from "@/views/lastchat.vue";
-import Test from "@/views/test.vue";
+import store from "@/store/store";
+import iView from "iview";
 
 Vue.use(Router);
-
 const MainRouter = [
   {
     path: "chat",
     name: "chat",
-    component: chat
+    component: () => import("@/views/chat.vue")
   },
   {
     path: "set",
     name: "set",
-    component: Set
+    component: () => import("@/views/set.vue")
   },
   {
     path: "lastchat",
     name: "lastchat",
-    component: Lastchat
+    component: () => import("@/views/lastchat.vue")
   },
   {
     path: "/",
@@ -37,28 +31,36 @@ const router = new Router({
     {
       path: "/main",
       name: "main",
-      component: Main,
+      component: () => import("@/views/main.vue"),
       children: MainRouter
     },
     {
       path: "/login",
       name: "login",
-      component: Login
+      component: () => import("@/views/login.vue")
     },
     {
       path: "/register",
       name: "register",
-      component: Register
-    },
-    {
-      path: "/",
-      redirect: "login"
+      component: () => import("@/views/register.vue")
     },
     {
       path: "/test",
       name: "test",
-      component: Test
+      component: () => import("@/views/test.vue")
+    },
+    {
+      path: "/",
+      redirect: "/login"
     }
   ]
+});
+router.beforeEach((to, from, next) => {
+  Vue.prototype.$Loading.start();
+  next();
+});
+
+router.afterEach(route => {
+  Vue.prototype.$Loading.finish();
 });
 export default router;

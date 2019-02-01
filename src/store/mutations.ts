@@ -1,6 +1,11 @@
 import { MutationTree } from "vuex";
 
 const mutations: MutationTree<config.StateType> = {
+  // 获取用户参数
+  GetUserParam(state,x){
+    state.userParam=x
+  },
+
   // 登陆状态删除
   loginStateDelete(state) {
     state.Loginstate = false;

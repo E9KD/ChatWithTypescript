@@ -4,7 +4,7 @@
     <div class="list_box">
       <div
         class="colleft_list"
-        :class="[ischoose==item.client_name?'ischoose':'nochoose',item.isOnline?'':'gray']"
+        :class="ischoose==item.client_name?'ischoose':'nochoose'"
         @click="goChartList(item.client_name,item.uid,index)"
         @mouseenter="MouserEnter(index)"
         @mouseleave="MouserLeave"
@@ -17,9 +17,27 @@
           @click.stop="Closelist(index)"
         >X</div>
         <div class="demo-avatar-badge colleft_img">
-          <Badge :count="item.messagecount">
-            <Avatar shape="square" :src="item.avatarUrl"/>
-          </Badge>
+          <Poptip trigger="hover" placement="right" width="300">
+            <div slot="content">
+              <Avatar :src="item.avatarUrl"/>
+              <Divider/>
+              <div>
+                <p class="person_tip_name person_tip_name_fade">姓名</p>
+                <p class="person_tip_name">{{item.client_name}}</p>
+              </div>
+              <div>
+                <p class="person_tip_name person_tip_name_fade">备注</p>
+                <p class="person_tip_name">{{item.client_name}}</p>
+              </div>
+              <div>
+                <p class="person_tip_name person_tip_name_fade">标签</p>
+                <p class="person_tip_name">{{item.client_name}}</p>
+              </div>
+            </div>
+            <Badge :count="item.messagecount">
+              <Avatar shape="square" :src="item.avatarUrl" style="width:5vh;height:5vh;"/>
+            </Badge>
+          </Poptip>
         </div>
         <div class="name_content">
           <div class="colleft_p">{{item.client_name}}</div>
@@ -32,15 +50,10 @@
 </template>
 
 <script lang='ts'>
-import Queue from "@/components/queue.vue";
 import { State, Mutation } from "vuex-class";
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { login_user_info } from "@/mock/logininfo";
-@Component({
-  components: {
-    Queue
-  }
-})
+@Component({})
 export default class Left extends Vue {
   @State("chartroom_logininfo")
   chartroom_logininfo?: config.LoginInfo[];
@@ -85,6 +98,7 @@ export default class Left extends Vue {
       name: x,
       id: id
     };
+    console.log(x, id, index);
     this.talkingUserState(a);
     this.ischoose = x;
     this.talkingpersonlist[index].messagecount = 0;
@@ -130,7 +144,7 @@ export default class Left extends Vue {
 
   created() {
     this.ChangeTalkListNumber();
-    this.talkingpersonlist = login_user_info;
+    // this.talkingpersonlist = login_user_info;
   }
 
   // 监听房间内人数
@@ -220,6 +234,9 @@ export default class Left extends Vue {
   width: 6vh;
   height: 6vh;
   flex-grow: 1;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .colleft_close {

@@ -2,7 +2,7 @@
  * @Company: YunMian
  * @Author: Song
  * @Date: 2019-01-09 10:34:12
- * @LastEditTime: 2019-01-15 16:41:05
+ * @LastEditTime: 2019-01-18 17:07:50
  */
 
 declare namespace config {
@@ -49,6 +49,22 @@ declare namespace config {
     stateMessage: any[];
     quickReplycontent: string;
     quickReplystate: boolean;
+    // 用户参数
+    userParam: userparamTypes;
+  }
+
+  //  用户参数
+  export interface userparamTypes {
+    city?: string;
+    country?: string;
+    headimgurl?: string;
+    language?: string;
+    nickname?: string;
+    openid?: string;
+    privilege?: any[];
+    province?: string;
+    sex?: number;
+    unionid?: string;
   }
 
   // 客户信息

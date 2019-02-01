@@ -24,7 +24,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Mutation } from "vuex-class";
 
-@Component
+@Component({})
 export default class Leftbar extends Vue {
   private ishover: number = 0;
   private isset: boolean = false;
@@ -49,6 +49,14 @@ export default class Leftbar extends Vue {
 
   get routeName() {
     return this.$route.name;
+  }
+
+  created() {
+    if (this.routeName == "chat") {
+      this.ishover = 0;
+      return;
+    }
+    this.ishover = 1;
   }
 
   @Watch("routeName")
@@ -98,6 +106,7 @@ export default class Leftbar extends Vue {
     top: 20%;
     left: 50%;
     transform: translate(-50%, 0px);
+    color: black;
     z-index: 99999;
     .leftbar_set {
       width: 25px;

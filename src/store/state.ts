@@ -1,4 +1,4 @@
-interface state {}
+
 
 const state: config.StateType = {
   password: 0,
@@ -21,7 +21,9 @@ const state: config.StateType = {
   // 选择的短语内容
   quickReplycontent: "",
   // 短语抽屉状态
-  quickReplystate: false
+  quickReplystate: false,
+  // 用户参数
+  userParam:{}
 };
 
 export default state;

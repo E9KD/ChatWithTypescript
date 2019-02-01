@@ -7,13 +7,13 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import Start from "@/components/start.vue";
+// import Start from "@/components/start.vue";
 import { con } from "@/utils/test.ts";
 import { State, Mutation } from "vuex-class";
 
 @Component({
   components: {
-    Start
+    Start: () => import("@/components/start.vue")
   }
 })
 export default class App extends Vue {
@@ -59,7 +59,7 @@ export default class App extends Vue {
 
   created() {
     this.init();
-    this.Egg();
+    // this.Egg();
   }
 }
 </script>
@@ -76,9 +76,15 @@ export default class App extends Vue {
   -moz-filter: grayscale(100%);
   -ms-filter: grayscale(100%);
   -o-filter: grayscale(100%);
-
   filter: grayscale(100%);
-
   filter: gray;
+}
+.person_tip_name {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 13px;
+}
+.person_tip_name_fade {
+  color: #999999;
 }
 </style>

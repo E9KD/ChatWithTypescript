@@ -9,16 +9,14 @@
 </template>
 
 <script lang='ts'>
-import Leftbar from "@/components/leftbar.vue";
 import { Vue, Component, Mixins } from "vue-property-decorator";
 import { socket } from "@/utils/socket";
 import socketMixins from "@/utils/mixins";
-import Top from "@/components/top.vue";
 import { Mutation } from "vuex-class";
 @Component({
   components: {
-    Leftbar,
-    Top
+    'Leftbar':()=>import('@/components/leftbar.vue'),
+    'Top':()=>import ('@/components/top.vue')
   }
 })
 export default class Main extends Mixins(socketMixins) {
@@ -27,18 +25,18 @@ export default class Main extends Mixins(socketMixins) {
   private loginData: string = "";
 
   InitSocket() {
-    this.loginData = `{"type":"login","client_name":"NewPc","room_id":"5","uid":"199","kid":"20"}`;
+    this.loginData = `{"type":"init","name":"NewPc","group":"1","uid":"199","kid":"KF2","avatar":"${this.$store.state.userParam}"}`;
     this.newsocket.SocketOpen(this.loginData);
     this.newsocket.ListenMessage();
   }
 
   AnyClick() {
-    if (!this.$store.state.Loginstate) {
-      this.$Message.warning("登陆状态过期，请重新登陆");
-      setTimeout(() => {
-        this.$router.replace("/login");
-      }, 800);
-    }
+    // if (!this.$store.state.Loginstate) {
+    //   this.$Message.warning("登陆状态过期，请重新登陆");
+    //   setTimeout(() => {
+    //     this.$router.replace("/login");
+    //   }, 800);
+    // }
   }
 
   // 登陆状态测试

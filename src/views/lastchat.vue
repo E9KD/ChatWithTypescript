@@ -6,16 +6,16 @@
   </div>
 </template>
 <script lang='ts'>
-import Lastleft from "@/components/lastleft.vue";
-import Lastmid from "@/components/lastmid.vue";
-import Mid from "@/components/mid.vue";
+// import Lastleft from "@/components/lastleft.vue";
+// import Lastmid from "@/components/lastmid.vue";
+// import Mid from "@/components/mid.vue";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
   components: {
-    Lastleft,
-    Lastmid,
-    Mid
+    'Lastleft':()=>import('@/components/lastleft.vue'),
+    'Lastmid':()=>import('@/components/lastmid.vue'),
+    'Mid':()=>import('@/components/mid.vue')
   }
 })
 export default class Lastchat extends Vue {

@@ -32,10 +32,9 @@
             </div>
             <img :class="item.code==1?'you_img':'mine_img'" :src="item.code==1?yimg:mimg">
           </div>
-        </div>·
+        </div>
       </div>
       <div class="colmid_mid">
-        <div class="mid_up_span"></div>
         <Tooltip content="上传图片" placement="top" class="mid_up" theme="light">
           <input
             @change="handleFileChange"
@@ -44,15 +43,10 @@
             class="mid_filebtn"
             accept="image/*"
           >
+          <img src="@/assets/pic.png" alt class="upfilebox">
         </Tooltip>
-        <img src="@/assets/pic.png" alt class="upfilebox">
-        <Tooltip
-          content="聊天记录"
-          placement="top"
-          class="mid_up"
-          style="margin-left:20px;"
-          theme="light"
-        >
+
+        <Tooltip content="聊天记录" placement="top" class="mid_up" theme="light">
           <img
             src="@/assets/charthistory.png"
             class="charthistory"
@@ -61,13 +55,8 @@
             placement="top"
           >
         </Tooltip>
-        <Tooltip
-          content="快捷回复"
-          placement="top"
-          class="mid_up"
-          style="margin-left:20px;"
-          theme="light"
-        >
+
+        <Tooltip content="快捷回复" placement="top" class="mid_up" theme="light">
           <img
             src="@/assets/kuai.png"
             class="charthistory"
@@ -76,10 +65,26 @@
             @click="GetQuickReply"
           >
         </Tooltip>
+        <Tooltip
+          content="表情"
+          max-width="40px"
+          placement="top"
+          class="mid_up"
+          style="margin-left:20px;"
+          theme="light"
+        >
+          <img src="@/assets/face.svg" class="charthistory" type="primary" placement="top">
+          <div slot="content" v-for="(item,index) in emojiList" :key="index" class="emoji">
+            <Tooltip :content="item.name" placement="top">
+              <img v-lazy="item.image" alt @click="ChooseEmoji(index)">
+            </Tooltip>
+          </div>
+        </Tooltip>
       </div>
       <div class="colmid_bom">
         <textarea class="bom_textarea" v-model="text" @keyup.enter="send"></textarea>
-        <button class="comit" @click="send">发送</button>
+        <p class="commitTitle">Enter键快速发送</p>
+        <Button class="comit" icon="ios-send" @click="send" type="primary">发送</Button>
       </div>
       <div class="colmid_other">
         <div class="other_bigimg" v-if="isbigimg" id="bigimg">
@@ -139,15 +144,16 @@
 // import lrz from "lrz";
 import { State, Mutation } from "vuex-class";
 import { test } from "@/utils/test";
+import emoji from "@/utils/emoji.ts";
 import socketMixins from "@/utils/mixins";
 let Base64 = require("js-base64").Base64;
 import { Vue, Component, Mixins, Watch, Prop } from "vue-property-decorator";
-import Right from "@/components/right.vue";
-import QuickReply from "@/components/quickreply.vue";
+import userTalk from "@/mock/usertalk";
+
 @Component({
   components: {
-    Right,
-    QuickReply
+    Right: () => import("@/components/right.vue"),
+    QuickReply: () => import("@/components/quickreply.vue")
   }
 })
 export default class Mid extends Mixins(socketMixins) {
@@ -176,6 +182,7 @@ export default class Mid extends Mixins(socketMixins) {
   DeleteQuickReply!: Function;
 
   private isExitend: boolean = false;
+  private emojiList: string[] = emoji;
   private quickreplybox: boolean = false;
   private toggle: string = "<";
   private isShowRight: boolean = false;
@@ -187,6 +194,11 @@ export default class Mid extends Mixins(socketMixins) {
   private bigimg: string = require("@/assets/active.png");
   private isbigimg: boolean = false;
   private talklisthistory: any[] = [];
+
+  // ChooseEmoji
+  ChooseEmoji(x: number) {
+    this.text += `[${emoji[x].name}]`;
+  }
 
   // 显示Right组件
   IsShowRight() {
@@ -274,7 +286,6 @@ export default class Mid extends Mixins(socketMixins) {
 
   // 选择快捷回复
   GetQuickReply() {
-    // this.OpenQuickReply();
     this.quickreplybox = true;
   }
 
@@ -329,6 +340,15 @@ export default class Mid extends Mixins(socketMixins) {
     this.LoginOut();
   }
 
+  ChangeName() {}
+
+  // 监听选择短语内容，改变则放入
+  @Watch("quickReplycontent")
+  changequickReplycontent(x: string) {
+    if (!x) return;
+    this.text += this.quickReplycontent;
+  }
+
   // 添加聊天
   @Watch("GetMessage")
   ChangeGetMessage() {
@@ -344,12 +364,10 @@ export default class Mid extends Mixins(socketMixins) {
 
   // 监听对话列表
   @Watch("talklist")
-  ChangeTalklist(x: any) {
+  ChangeTalklist(x: any[]) {
     // 每次该改变就是进行了对话，保存在session中。
     if (x.length > 0) {
-      let talklistSession: string = JSON.stringify(x);
-      let id2String: string = this.talkingUserId.toString();
-      sessionStorage.setItem(id2String, talklistSession);
+      sessionStorage.setItem(this.talkingUserId.toString(), JSON.stringify(x));
     }
   }
 
@@ -366,19 +384,10 @@ export default class Mid extends Mixins(socketMixins) {
     this.keepBom();
   }
 
-  //监听选择短语内容，改变则放入
-  @Watch("quickReplycontent")
-  changequickReplycontent(x: string) {
-    if (!x) return;
-    this.text = this.quickReplycontent;
-  }
-
   // 监听短语抽屉关闭，关闭则重置短语内容
   @Watch("quickreplybox")
   Changequickreplybox(x: boolean) {
-    if (!x) {
-      this.DeleteQuickReply();
-    }
+    if (!x) this.DeleteQuickReply();
   }
 }
 </script>
@@ -412,22 +421,6 @@ export default class Mid extends Mixins(socketMixins) {
   background-color: #999;
   color: white;
 }
-.colmid_top {
-  height: 70%;
-  overflow: hidden;
-}
-
-.colmid_mid {
-  height: 10%;
-  position: relative;
-  border-top: 1px solid #e6e6e6;
-  padding-top: 10px;
-}
-
-.colmid_bom {
-  height: 20%;
-  position: relative;
-}
 
 .top_talk {
   height: 90%;
@@ -445,6 +438,14 @@ export default class Mid extends Mixins(socketMixins) {
   overflow: hidden;
   border-bottom: 1px solid #e6e6e6;
   background-color: #f7f7f7;
+}
+.colmid_top {
+  height: 70%;
+  overflow: hidden;
+}
+.colmid_bom {
+  height: 20%;
+  position: relative;
 }
 .top_function {
   padding: 10px 30px;
@@ -517,114 +518,31 @@ export default class Mid extends Mixins(socketMixins) {
   background-color: #f5f5f5;
   border: none;
 }
-
+.commitTitle {
+  position: absolute;
+  bottom: 5%;
+  left: 1%;
+  font-size: 12px;
+  color: #999;
+}
 .comit {
   position: absolute;
   bottom: 10%;
   right: 5%;
-  width: 6vw;
-  height: 4vh;
+  // width: 6vw;
+  // height: 4vh;
   border-radius: 20px;
-  line-height: 4vh;
+  // line-height: 4vh;
   background-color: #00adb5;
   &:hover {
     background-color: #0a8f96;
   }
-  color: white;
+  // color: white;
 }
 
 .talklist_img {
   width: 48px;
   height: 48px;
-}
-
-.mid_up {
-  height: 30px;
-  width: 30px;
-  display: inline-block;
-  cursor: pointer;
-}
-
-.mid_up2 {
-  height: 25px;
-  display: inline-block;
-  margin-left: 30px;
-  position: relative;
-}
-
-.mid_up_tip {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 30px;
-  height: 30px;
-}
-
-.charthistory {
-  width: 30px;
-  height: 30px;
-  padding: 5px 5px;
-  border-radius: 10px;
-  background-color: #00adb5;
-  &:hover {
-    background-color: #0a8f96;
-  }
-  cursor: pointer;
-}
-
-.mid_imgbtn {
-  position: absolute;
-  left: 40%;
-  top: 50%;
-  transform: translate(-20%, -50%);
-  width: 30px;
-  height: 25px;
-  opacity: 0;
-  z-index: 99;
-  overflow: hidden;
-}
-
-.upimgbox {
-  z-index: 1;
-  position: absolute;
-  left: 40%;
-  top: 50%;
-  transform: translate(-20%, -50%);
-  width: 30px;
-  height: 30px;
-  padding: 5px 5px;
-  border-radius: 10px;
-  background-color: #00adb5;
-  &:hover {
-    background-color: #0a8f96;
-  }
-}
-
-.mid_filebtn {
-  opacity: 0;
-  width: 30px;
-  height: 30px;
-  overflow: hidden;
-  padding: 10px;
-  z-index: 99;
-  position: relative;
-  cursor: pointer;
-}
-
-.upfilebox {
-  position: absolute;
-  top: 10px;
-  left: 50px;
-  z-index: 1;
-  width: 30px;
-  height: 30px;
-  padding: 5px 5px;
-  border-radius: 10px;
-  background-color: #00adb5;
-  &:hover {
-    background-color: #0a8f96;
-  }
-  cursor: pointer;
 }
 
 .mid_up_span {
@@ -704,5 +622,101 @@ export default class Mid extends Mixins(socketMixins) {
 
 .drawer {
   width: 40%;
+}
+.mid_up_tip {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 30px;
+  height: 30px;
+}
+
+.upimgbox {
+  z-index: 1;
+  position: absolute;
+  left: 40%;
+  top: 50%;
+  transform: translate(-20%, -50%);
+  width: 30px;
+  height: 30px;
+  padding: 5px 5px;
+  border-radius: 10px;
+  background-color: #00adb5;
+  &:hover {
+    background-color: #0a8f96;
+  }
+}
+
+.mid_filebtn {
+  opacity: 0;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  padding: 10px;
+  z-index: 99;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  cursor: pointer;
+}
+
+.upfilebox {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  padding: 5px 5px;
+  border-radius: 10px;
+  background-color: #00adb5;
+  &:hover {
+    background-color: #0a8f96;
+  }
+  cursor: pointer;
+}
+.charthistory {
+  width: 30px;
+  height: 30px;
+  padding: 5px 5px;
+  border-radius: 10px;
+  background-color: #00adb5;
+  &:hover {
+    background-color: #0a8f96;
+  }
+  cursor: pointer;
+}
+
+.mid_imgbtn {
+  position: absolute;
+  left: 40%;
+  top: 50%;
+  transform: translate(-20%, -50%);
+  width: 30px;
+  height: 25px;
+  opacity: 0;
+  z-index: 99;
+  overflow: hidden;
+}
+
+.mid_up {
+  height: 30px;
+  width: 30px;
+  display: inline-block;
+  cursor: pointer;
+  margin-left: 20px;
+  z-index: 999;
+}
+
+.colmid_mid {
+  height: 10%;
+  position: relative;
+  border-top: 1px solid #e6e6e6;
+  padding-top: 10px;
+}
+.emoji {
+  display: inline-block;
+  width: 25px;
+  margin: 0px 1.5px;
 }
 </style>

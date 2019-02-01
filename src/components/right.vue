@@ -39,7 +39,7 @@
 <script lang='ts'>
 import { Vue, Component } from "vue-property-decorator";
 import { user_info_list } from "@/mock/logininfo";
-@Component
+@Component({})
 export default class Right extends Vue {
   private isShowright: number = 0;
   private userInfoList: config.userinfoTypes = {};

@@ -1,7 +1,7 @@
 <template>
   <div class="top">
     <div class="top_box">
-      <img class="box_img gray" src="../assets/logo.jpeg" alt>
+      <img class="box_img" v-lazy="logoImage" alt>
       <p class="box_p">比尔高</p>
       <!-- <p class="box_loginout" v-if="Loginstate" @click="loginOut">登出</p>
       <p class="box_login" @click="goLogin('/login')" v-if="!Loginstate">登陆</p>
@@ -15,16 +15,24 @@ import { Vue, Component } from "vue-property-decorator";
 import { State, Mutation } from "vuex-class";
 @Component({})
 export default class Top extends Vue {
-  @State("Loginstate") Loginstate: any;
-  @Mutation("loginStateDelete") loginStateDelete: any;
+  @State("Loginstate")
+  Loginstate: any;
+
+  @Mutation("loginStateDelete")
+  loginStateDelete: any;
+
   private theme1: string = "light";
+  private logoImage: string = require("@/assets/logo.jpeg");
+
   loginOut() {
     this.loginStateDelete();
     this.$router.push("/login");
   }
+
   goLogin(x: string) {
     this.$router.push(x);
   }
+
   goRegister(x: string) {
     this.$router.push(x);
   }

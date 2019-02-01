@@ -1,12 +1,12 @@
 <template>
   <div class="chart">
     <Left></Left>
-    <Mid :pageState='chatStatepage' />
+    <Mid :pageState="chatStatepage"/>
   </div>
 </template>
 <script lang='ts'>
-import Left from "@/components/left.vue";
-import Mid from "@/components/mid.vue";
+// import Left from "@/components/left.vue";
+// import Mid from "@/components/mid.vue";
 // import Right from "@/components/right.vue";
 // import { socket } from "@/utils/socket";
 // import socketMixins from "@/utils/mixins";
@@ -14,13 +14,13 @@ import { Vue, Component, Mixins } from "vue-property-decorator";
 
 @Component({
   components: {
-    Left,
-    Mid,
+    Left: () => import("@/components/left.vue"),
+    Mid: () => import("@/components/mid.vue")
     // Right
   }
 })
 export default class Chat extends Vue {
-  private chatStatepage:string='chat'
+  private chatStatepage: string = "chat";
   // private loginData: string = "";
   // InitSocket() {
   //   this.loginData = `{"type":"login","client_name":"NewPc","room_id":"5","uid":"199","kid":"20"}`;

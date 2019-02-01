@@ -6,12 +6,30 @@
         class="colleft_list"
         :class="[ischoose==item.client_name?'ischoose':'nochoose',item.isOnline?'':'gray']"
         @mouseenter="MouserEnter(index)"
-        @mouseleave="mouserLeave"
+        @mouseleave="MouserLeave"
         @click="ChangeTalkUser(item.client_name)"
         v-for="(item,index) in talkhistorylist"
         :key="index"
       >
-        <img :src="item.avatarUrl" class="colleft_img gray">
+        <Poptip trigger="hover" placement="right" width="300">
+          <div slot="content">
+            <Avatar :src="item.avatarUrl" />
+            <Divider />
+            <div>
+              <p class="person_tip_name person_tip_name_fade">姓名</p>
+              <p class="person_tip_name">{{item.client_name}}</p>
+            </div>
+            <div>
+              <p class="person_tip_name person_tip_name_fade">备注</p>
+              <p class="person_tip_name">{{item.client_name}}</p>
+            </div>
+            <div>
+              <p class="person_tip_name person_tip_name_fade">标签</p>
+              <p class="person_tip_name">{{item.client_name}}</p>
+            </div>
+          </div>
+          <img :src="item.avatarUrl" class="colleft_img gray">
+        </Poptip>
         <p class="colleft_p">{{item.client_name}}</p>
         <p class="colleft_time">{{item.lastTalktime}}</p>
       </div>
@@ -48,13 +66,13 @@ export default class Lastchat extends Vue {
       avatarUrl: require("@/assets/all.png"),
       client_name: "呜呜呜呜呜",
       lastTalktime: "09/10 20:01",
-      isOnline: false
+      isOnline: true
     },
     {
       avatarUrl: require("@/assets/all.png"),
       client_name: "亲亲亲亲亲",
       lastTalktime: "09/10 20:01",
-      isOnline: false
+      isOnline: true
     }
   ];
 
@@ -156,5 +174,6 @@ export default class Lastchat extends Vue {
   background: url("/src/assets/bg.png") center center no-repeat;
   transition: top 0.3s, height 0.3s;
 }
+
 </style>
 
