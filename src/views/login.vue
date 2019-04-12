@@ -169,18 +169,15 @@ export default class Lastchat extends Vue {
   }
 
   test() {
-
-    function change(arr:any){
-      let left=0
-      let right=arr.length-1
-      let tip=arr[0]
+    function change(arr: any) {
+      let left = 0;
+      let right = arr.length - 1;
+      let tip = arr[0];
       // for(let i=0;)
       // 判断比基数小的
-      if(arr[right]>tip){
-        
+      if (arr[right] > tip) {
       }
       // 判断比基数大的
-
     }
   }
 
